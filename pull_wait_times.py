@@ -43,7 +43,7 @@ for line in lines:
       json_data[key] = line.strip()
       key = ''
 
-# os.remove('temp.pdf')
+os.remove('temp.pdf')
 
 # write out as a local json file
 new_data_file = open('%s_data.json' % json_data['current_time_window'].replace(' ', '_').replace('/', '-'), 'w+')
