@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 import slate3k as slate
 
@@ -19,21 +20,17 @@ json_data = {
 }
 
 log_refresh = False
-log_window = 0
 key = ''
 for line in lines:
   if log_refresh and json_data['refresh_time'] == '':
     json_data['refresh_time'] = line.strip()
     log_refresh = False
 
-  elif json_data['current_time_window'] == '' and log_window == 2:
+  elif json_data['current_time_window'] == '' and line.find('|') > -1:
     json_data['current_time_window'] = line.strip().replace('|', '')
 
   elif line.find('Refresh') > -1:
     log_refresh = True
-
-  elif line.find('Current Time Window') > -1 or log_window == 1:
-    log_window += 1
 
   elif json_data['current_time_window'] != '':
     if line.strip() == '':
@@ -45,6 +42,8 @@ for line in lines:
     else:
       json_data[key] = line.strip()
       key = ''
+
+# os.remove('temp.pdf')
 
 # write out as a local json file
 new_data_file = open('%s_data.json' % json_data['current_time_window'].replace(' ', '_').replace('/', '-'), 'w+')
